@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lector MD</title>
+<meta name="description" content="Lee, escucha y edita archivos Markdown en tu celular.">
+<meta name="theme-color" content="#F2F4F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14171E" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="vendor/hl-light.css" id="hlLight">
+<link rel="stylesheet" href="vendor/hl-dark.css" id="hlDark" disabled>
+<link rel="stylesheet" href="app.css">
+<script src="vendor/marked.js" defer></script>
+<script src="vendor/purify.js" defer></script>
+<script src="vendor/highlight.js" defer></script>
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13 7l4 4"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></symbol>
+    <symbol id="i-toc" viewBox="0 0 24 24"><path d="M4 6h16M4 12h11M4 18h7"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" class="fill"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" class="fill"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6l-8 6 8 6z" class="fill"/><path d="M6 6v12"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6l8 6-8 6z" class="fill"/><path d="M18 6v12"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-listen" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10H4z"/><path d="M16.5 9a4 4 0 010 6M19 6.5a7.5 7.5 0 010 11"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.2 4.2 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></symbol>
+    <symbol id="i-drive" viewBox="0 0 24 24"><path d="M8.5 3.5h7l6 10.5-3.5 6h-12L2.5 14z"/><path d="M8.5 3.5L15 14.5h6.5M15.5 3.5L9 14.5 5.5 20.5M2.5 14H15"/></symbol>
+    <symbol id="i-new" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M12 11v6M9 14h6"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></symbol>
+  </defs>
+</svg>
+
+<header class="bar" id="bar">
+  <button class="icon-btn" id="btnBack" aria-label="Volver a la biblioteca" hidden><svg><use href="#i-back"/></svg></button>
+  <h1 class="bar-title" id="barTitle">Biblioteca</h1>
+  <div class="bar-actions">
+    <button class="icon-btn" id="btnToc" aria-label="Índice" hidden><svg><use href="#i-toc"/></svg></button>
+    <button class="icon-btn" id="btnListen" aria-label="Leer en voz alta" hidden><svg><use href="#i-listen"/></svg></button>
+    <button class="icon-btn" id="btnEdit" aria-label="Editar" hidden><svg><use href="#i-edit"/></svg></button>
+    <button class="icon-btn" id="btnDocMenu" aria-label="Más opciones" hidden><svg><use href="#i-more"/></svg></button>
+    <button class="icon-btn" id="btnSettings" aria-label="Ajustes"><svg><use href="#i-settings"/></svg></button>
+  </div>
+</header>
+
+<main id="main">
+  <!-- Biblioteca -->
+  <section class="view" id="viewLibrary">
+    <label class="search">
+      <svg><use href="#i-search"/></svg>
+      <input type="search" id="search" placeholder="Buscar en títulos y contenido" autocomplete="off">
+    </label>
+    <div class="tabs" role="tablist">
+      <button role="tab" class="tab" aria-selected="true" data-tab="recent">Recientes</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="folders">Carpetas</button>
+    </div>
+    <div id="libList" class="lib-list"></div>
+    <div id="libEmpty" class="empty" hidden>
+      <p class="empty-title">Tu biblioteca está vacía</p>
+      <p>Abre un archivo .md del celular, importa los de un repositorio de GitHub o de Google Drive, o comparte un .md hacia esta app desde el administrador de archivos.</p>
+      <button class="btn primary" data-action="open-sheet">Abrir archivos</button>
+    </div>
+    <button class="fab" id="fab" data-action="open-sheet"><svg><use href="#i-plus"/></svg><span>Abrir</span></button>
+  </section>
+
+  <!-- Lector -->
+  <section class="view" id="viewReader" hidden>
+    <div class="doc-meta" id="docMeta"></div>
+    <article class="md" id="doc"></article>
+  </section>
+
+  <!-- Editor -->
+  <section class="view" id="viewEditor" hidden>
+    <div class="ed-toolbar" role="toolbar" aria-label="Formato">
+      <button data-md="bold" aria-label="Negrita"><b>B</b></button>
+      <button data-md="italic" aria-label="Cursiva"><i>I</i></button>
+      <button data-md="h" aria-label="Título">H</button>
+      <button data-md="ul" aria-label="Lista">•</button>
+      <button data-md="task" aria-label="Tarea">☐</button>
+      <button data-md="code" aria-label="Código">{ }</button>
+      <button data-md="link" aria-label="Enlace">🔗</button>
+      <span class="spacer"></span>
+      <button class="ed-toggle" id="btnPreview" aria-pressed="false"><svg><use href="#i-eye"/></svg>Vista previa</button>
+    </div>
+    <textarea id="editor" spellcheck="true" autocapitalize="sentences"></textarea>
+    <article class="md" id="preview" hidden></article>
+    <div class="ed-footer">
+      <span id="edStatus" class="muted"></span>
+      <button class="btn" id="btnCancelEdit">Descartar</button>
+      <button class="btn primary" id="btnSave"><svg><use href="#i-save"/></svg>Guardar</button>
+    </div>
+  </section>
+
+  <!-- Ajustes -->
+  <section class="view settings" id="viewSettings" hidden>
+    <h2>Lectura</h2>
+    <div class="field">
+      <span>Tema</span>
+      <div class="seg" id="themeSeg">
+        <button data-theme="system">Sistema</button><button data-theme="light">Claro</button><button data-theme="dark">Oscuro</button>
+      </div>
+    </div>
+    <label class="field"><span>Tamaño de letra <output id="fontSizeOut"></output></span>
+      <input type="range" id="fontSize" min="15" max="24" step="1"></label>
+
+    <h2>Voz</h2>
+    <label class="field"><span>Voz</span><select id="voiceSel"></select></label>
+    <label class="field"><span>Velocidad <output id="rateOut"></output></span>
+      <input type="range" id="rate" min="0.6" max="2" step="0.1"></label>
+    <label class="field check"><input type="checkbox" id="readCode"> <span>Leer también los bloques de código</span></label>
+    <label class="field check"><input type="checkbox" id="keepAwake"> <span>Mantener la pantalla encendida mientras lee</span></label>
+
+    <h2>GitHub</h2>
+    <label class="field"><span>Token personal (opcional)</span>
+      <input type="password" id="ghToken" placeholder="github_pat_…" autocomplete="off"></label>
+    <p class="hint">Sin token puedes leer repositorios públicos (60 consultas por hora). Con un token <em>fine-grained</em> con permiso <em>Contents: Read and write</em> puedes leer repos privados y guardar cambios como commits. Se guarda solo en este celular.</p>
+
+    <h2>Google Drive</h2>
+    <label class="field"><span>Client ID de OAuth</span>
+      <input type="text" id="driveClientId" placeholder="123….apps.googleusercontent.com" autocomplete="off"></label>
+    <p class="hint">Necesario para Drive. Los pasos para crearlo están en el README del proyecto.</p>
+    <button class="btn" id="btnDriveSignout">Cerrar sesión de Drive</button>
+
+    <h2>Biblioteca</h2>
+    <p class="hint" id="storageInfo"></p>
+    <button class="btn danger" id="btnClearLib">Vaciar biblioteca</button>
+    <p class="hint version">Lector MD <span id="appVersion"></span></p>
+  </section>
+</main>
+
+<!-- Reproductor -->
+<div class="player" id="player" hidden>
+  <div class="player-progress"><div id="playerBar"></div></div>
+  <div class="player-row">
+    <div class="player-info">
+      <span id="playerPos">Párrafo 1 de 1</span>
+      <button class="rate-chip" id="rateChip" aria-label="Cambiar velocidad">1.0×</button>
+    </div>
+    <div class="player-controls">
+      <button class="icon-btn" id="pPrev" aria-label="Párrafo anterior"><svg><use href="#i-prev"/></svg></button>
+      <button class="play-btn" id="pPlay" aria-label="Reproducir"><svg><use href="#i-play"/></svg></button>
+      <button class="icon-btn" id="pNext" aria-label="Párrafo siguiente"><svg><use href="#i-next"/></svg></button>
+    </div>
+    <button class="icon-btn" id="pClose" aria-label="Cerrar reproductor"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <p class="player-tip">Toca cualquier párrafo para leer desde ahí.</p>
+</div>
+
+<!-- Hoja: abrir -->
+<dialog class="sheet" id="sheetOpen">
+  <div class="sheet-handle"></div>
+  <h2 class="sheet-title">Abrir</h2>
+  <button class="sheet-item" data-open="file"><svg><use href="#i-phone"/></svg><span><b>Archivos del celular</b><small>Elige uno o varios .md</small></span></button>
+  <button class="sheet-item" data-open="dir"><svg><use href="#i-folder"/></svg><span><b>Carpeta del celular</b><small>Importa todos los .md de una carpeta</small></span></button>
+  <button class="sheet-item" data-open="github"><svg><use href="#i-github"/></svg><span><b>Repositorio de GitHub</b><small>READMEs y documentación</small></span></button>
+  <button class="sheet-item" data-open="drive"><svg><use href="#i-drive"/></svg><span><b>Google Drive</b><small>Archivos .md de tu Drive</small></span></button>
+  <button class="sheet-item" data-open="new"><svg><use href="#i-new"/></svg><span><b>Documento nuevo</b><small>Escribe desde cero</small></span></button>
+</dialog>
+
+<!-- Hoja: menú del documento -->
+<dialog class="sheet" id="sheetDoc">
+  <div class="sheet-handle"></div>
+  <h2 class="sheet-title" id="sheetDocTitle"></h2>
+  <button class="sheet-item" data-docact="reload"><svg><use href="#i-refresh"/></svg><span><b>Volver a cargar desde el origen</b><small id="reloadHint"></small></span></button>
+  <button class="sheet-item" data-docact="export"><svg><use href="#i-save"/></svg><span><b>Guardar una copia .md</b><small>En Descargas o donde elijas</small></span></button>
+  <button class="sheet-item" data-docact="drivecopy"><svg><use href="#i-drive"/></svg><span><b>Subir una copia a Drive</b><small>Se crea en la raíz de tu Drive</small></span></button>
+  <button class="sheet-item danger" data-docact="delete"><svg><use href="#i-close"/></svg><span><b>Quitar de la biblioteca</b><small>No borra el archivo original</small></span></button>
+</dialog>
+
+<!-- Índice -->
+<dialog class="sheet" id="sheetToc">
+  <div class="sheet-handle"></div>
+  <h2 class="sheet-title">Índice</h2>
+  <nav id="tocList" class="toc"></nav>
+</dialog>
+
+<!-- GitHub -->
+<dialog class="sheet tall" id="dlgGithub">
+  <div class="sheet-handle"></div>
+  <h2 class="sheet-title">Importar desde GitHub</h2>
+  <form id="ghForm" class="row-form">
+    <input id="ghRepo" list="ghRepos" placeholder="usuario/repositorio o URL" autocomplete="off" autocapitalize="off" required>
+    <datalist id="ghRepos"></datalist>
+    <input id="ghBranch" placeholder="rama (opcional)" autocomplete="off" autocapitalize="off">
+    <button class="btn primary">Buscar .md</button>
+  </form>
+  <div id="ghStatus" class="muted"></div>
+  <div id="ghFiles" class="pick-list"></div>
+  <div class="sheet-footer" id="ghFooter" hidden>
+    <label class="check"><input type="checkbox" id="ghAll"> Todos</label>
+    <button class="btn primary" id="ghImport">Importar</button>
+  </div>
+</dialog>
+
+<!-- Drive -->
+<dialog class="sheet tall" id="dlgDrive">
+  <div class="sheet-handle"></div>
+  <h2 class="sheet-title">Importar desde Google Drive</h2>
+  <form id="drForm" class="row-form">
+    <input id="drQuery" placeholder="Filtrar por nombre (opcional)" autocomplete="off">
+    <button class="btn primary">Buscar .md</button>
+  </form>
+  <div id="drStatus" class="muted"></div>
+  <div id="drFiles" class="pick-list"></div>
+  <div class="sheet-footer" id="drFooter" hidden>
+    <label class="check"><input type="checkbox" id="drAll"> Todos</label>
+    <button class="btn primary" id="drImport">Importar</button>
+  </div>
+</dialog>
+
+<!-- Confirmación -->
+<dialog class="confirm" id="dlgConfirm">
+  <p id="confirmText"></p>
+  <div class="confirm-actions">
+    <button class="btn" value="cancel" id="confirmNo">Cancelar</button>
+    <button class="btn primary" value="ok" id="confirmYes">Aceptar</button>
+  </div>
+</dialog>
+
+<input type="file" id="filePick" accept=".md,.markdown,.mdown,.txt,text/markdown,text/plain" multiple hidden>
+<input type="file" id="dirPick" webkitdirectory multiple hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
